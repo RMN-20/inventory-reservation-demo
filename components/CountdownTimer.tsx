@@ -2,18 +2,26 @@
 
 import { useEffect, useState } from "react";
 
-export default function CountdownTimer() {
-  const [timeLeft, setTimeLeft] = useState(5 * 60 * 1000);
+type Props = {
+  expiresAt: number;
+};
+
+export default function CountdownTimer({
+  expiresAt,
+}: Props) {
+  const [timeLeft, setTimeLeft] = useState(0);
 
   useEffect(() => {
-    const expiresAt = Date.now() + 5 * 60 * 1000;
-
-    const interval = setInterval(() => {
+    const updateTimer = () => {
       setTimeLeft(expiresAt - Date.now());
-    }, 1000);
+    };
+
+    updateTimer();
+
+    const interval = setInterval(updateTimer, 1000);
 
     return () => clearInterval(interval);
-  }, []);
+  }, [expiresAt]);
 
   if (timeLeft <= 0) {
     return (

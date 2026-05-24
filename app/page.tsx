@@ -32,7 +32,9 @@ export default function Home() {
 
     const reservation = await response.json();
 
-    router.push(`/reservation/${reservation.id}`);
+    router.push(
+  `/reservation/${reservation.id}?expiresAt=${reservation.expiresAt}`
+);
 
     setLoadingId(null);
   };

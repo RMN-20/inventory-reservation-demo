@@ -1,41 +1,21 @@
 import CountdownTimer from "@/components/CountdownTimer";
 import ReservationActions from "@/components/ReservationActions";
-import { reservations } from "@/data/store";
 
 type Props = {
   params: Promise<{
     id: string;
   }>;
+  searchParams: Promise<{
+    expiresAt?: string;
+  }>;
 };
 
 export default async function ReservationPage({
   params,
+  searchParams,
 }: Props) {
   const { id } = await params;
-
-  const reservation = reservations.find(
-    (r) => r.id === id
-  );
-
-  if (!reservation) {
-    return (
-      <main className="min-h-screen flex items-center justify-center bg-gradient-to-br from-sky-100 via-slate-100 to-cyan-100 p-8">
-        <h1 className="text-2xl font-bold text-slate-800">
-          Reservation not found
-        </h1>
-      </main>
-    );
-  }
-
-  if (reservation.status === "expired") {
-    return (
-      <main className="min-h-screen flex items-center justify-center bg-gradient-to-br from-sky-100 via-slate-100 to-cyan-100 p-8">
-        <h1 className="text-2xl font-bold text-rose-600">
-          Reservation expired
-        </h1>
-      </main>
-    );
-  }
+  const { expiresAt } = await searchParams;
 
   return (
     <main className="min-h-screen bg-gradient-to-br from-sky-100 via-slate-100 to-cyan-100 p-8">
@@ -49,7 +29,7 @@ export default async function ReservationPage({
         </p>
 
         <p className="mt-1 rounded-lg bg-slate-100 p-3 font-mono text-sm text-slate-800">
-          {reservation.id}
+          {id}
         </p>
 
         <div className="mt-8 rounded-2xl bg-sky-50 p-6">
@@ -57,10 +37,12 @@ export default async function ReservationPage({
             Reservation expires in:
           </p>
 
-          <CountdownTimer />
+          <CountdownTimer
+            expiresAt={Number(expiresAt)}
+          />
         </div>
 
-        <ReservationActions reservationId={reservation.id} />
+        <ReservationActions reservationId={id} />
       </div>
     </main>
   );
