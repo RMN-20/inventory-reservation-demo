@@ -13,7 +13,7 @@ export default async function ReservationPage({
   const { id } = await params;
 
   const response = await fetch(
-    `http://localhost:3000/api/reserve/${id}`,
+    `${process.env.NEXT_PUBLIC_BASE_URL}/api/reserve/${id}`,
     {
       cache: "no-store",
     }
@@ -64,9 +64,7 @@ export default async function ReservationPage({
           <CountdownTimer />
         </div>
 
-        <ReservationActions
-          reservationId={reservation.id}
-        />
+        <ReservationActions reservationId={reservation.id} />
       </div>
     </main>
   );
