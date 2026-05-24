@@ -1,5 +1,6 @@
 import CountdownTimer from "@/components/CountdownTimer";
 import ReservationActions from "@/components/ReservationActions";
+import { reservations } from "@/data/store";
 
 type Props = {
   params: Promise<{
@@ -12,34 +13,29 @@ export default async function ReservationPage({
 }: Props) {
   const { id } = await params;
 
-  const response = await fetch(
-    `${process.env.NEXT_PUBLIC_BASE_URL}/api/reserve/${id}`,
-    {
-      cache: "no-store",
-    }
+  const reservation = reservations.find(
+    (r) => r.id === id
   );
 
-  if (response.status === 404) {
+  if (!reservation) {
     return (
-      <main className="min-h-screen p-8">
-        <h1 className="text-2xl font-bold">
+      <main className="min-h-screen flex items-center justify-center bg-gradient-to-br from-sky-100 via-slate-100 to-cyan-100 p-8">
+        <h1 className="text-2xl font-bold text-slate-800">
           Reservation not found
         </h1>
       </main>
     );
   }
 
-  if (response.status === 410) {
+  if (reservation.status === "expired") {
     return (
-      <main className="min-h-screen p-8">
+      <main className="min-h-screen flex items-center justify-center bg-gradient-to-br from-sky-100 via-slate-100 to-cyan-100 p-8">
         <h1 className="text-2xl font-bold text-rose-600">
           Reservation expired
         </h1>
       </main>
     );
   }
-
-  const reservation = await response.json();
 
   return (
     <main className="min-h-screen bg-gradient-to-br from-sky-100 via-slate-100 to-cyan-100 p-8">
